@@ -46,16 +46,28 @@
 (setq initial-major-mode 'text-mode)
 
 ;; 开启全局 Company 补全
-(add-hook 'after-init-hook 'global-company-mode)
+;; (add-hook 'after-init-hook 'global-company-mode)
 
 ;; No delay in showing suggestions.
-(setq company-idle-delay 0)
+;; (setq company-idle-delay 0)
 
 ;; Show suggestions after entering one character.
-(setq company-minimum-prefix-length 1)
+;; (setq company-minimum-prefix-length 1)
 
-(setq company-selection-wrap-around t)
+;; (setq company-selection-wrap-around t)
 
 ;; Use tab key to cycle through suggestions.
 ;; ('tng' means 'tab and go')
 ;; (company-tng-configure-default)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (company))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
