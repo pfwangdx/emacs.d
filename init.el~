@@ -1,54 +1,109 @@
+;; stuff automatically added
+;;
 
-;; tool-bar-mode 即为一个 Minor Mode
-;; (tool-bar-mode -1)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (ace-window counsel org-bullets which-key use-package try company))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0)))))
 
-;; 关闭文件滑动控件
-(scroll-bar-mode -1)
 
-;; 显示行号
+;; Our stuff
+
+;; Show line number
 (global-linum-mode 1)
-;; 高亮当前行
+;; Highlight current line
 (global-hl-line-mode 1)
-
-
-;; 括号匹配
+;; Bracket matching
 (show-paren-mode 1)
-
-
-;; 更改光标的样式（不能生效，解决方案见第二集）
-(setq cursor-type 'bar)
-
-;; 关闭启动帮助画面
+;; Close the start up tips
 (setq inhibit-splash-screen 1)
-
-;; 关闭缩进 (第二天中被去除)
-;; (electric-indent-mode -1)
-
-;; 更改显示字体大小 16pt
-;; http://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
+;; Font settings
 (set-face-attribute 'default nil :height 160)
+;; Save the desktop
+(desktop-save-mode 1)
 
-;; 快速打开配置文件
-(defun open-init-file()
-    (interactive)
-      (find-file "~/.emacs.d/init.el"))
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/"))
 
-;; 这一行代码，将函数 open-init-file 绑定到 <f2> 键上
-;;(global-set-key (kbd "<f2>") 'open-init-file)
+(package-initialize)
 
-(setq initial-major-mode 'text-mode)
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+	(package-refresh-contents)
+	(package-install 'use-package))
 
-;; 开启全局 Company 补全
-(add-hook 'after-init-hook 'global-company-mode)
+(use-package try
+	:ensure t)
 
-;; No delay in showing suggestions.
-(setq company-idle-delay 0)
+(use-package which-key
 
-;; Show suggestions after entering one character.
-(setq company-minimum-prefix-length 1)
+  :ensure t 
+	:config
+	(which-key-mode))
 
-(setq company-selection-wrap-around t)
+;; Org-mode stuff
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-;; Use tab key to cycle through suggestions.
-;; ('tng' means 'tab and go')
-;; (company-tng-configure-default)
+
+;; it looks like counsel is a requirement for swiper
+(use-package counsel
+  :ensure t
+  )
+
+
+(use-package swiper
+  :ensure try
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> l") 'counsel-load-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+
+(use-package ace-window
+  :ensure t
+  :init
+  (progn
+    (global-set-key [remap other-window] 'ace-window)
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
+    ))
+
+(use-package auto-complete
+  :ensure t
+  :init
+  (progn
+    (ac-config-default)
+    (global-auto-complete-mode t)
+    ))
